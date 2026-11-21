@@ -1,0 +1,22 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "allthecompressed"
+    },
+    {
+      "type": "neoforge:item_exists",
+      "item": "allthecompressed:raw_gold_block_9x"
+    }
+  ],
+  "type": "minecraft:smelting",
+  "category": "blocks",
+  "cookingtime": 200,
+  "experience": 729.0,
+  "ingredient": {
+    "item": "allthecompressed:raw_gold_block_9x"
+  },
+  "result": {
+    "id": "allthecompressed:gold_block_9x"
+  }
+}

@@ -1,0 +1,105 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'net.neoforged.moddev' version '2.0.144'
+    id 'idea'
+}
+
+repositories {
+    // 本机自定义仓库（沙箱里 maven.neoforged.net 被 DNS 污染/白名单拦截）：
+    // 1) 本地 file 仓库，从 gradle 缓存导出，只接管 net.neoforged 组（BMCLAPI 缺 neoform-runtime、
+    //    minecraft-dependencies 等）；必须排除子组 net.neoforged.fancymodloader，否则 runServer 的
+    //    module path 上会出现重复的 fml_* 模块（报 reads another module named fml_earlydisplay）。
+    // 2) BMCLAPI 镜像，内容与 maven.neoforged.net/releases 一致。
+    // 换到网络正常的机器上，这两行可以整个删掉。
+    maven {
+        url = 'file:///root/localmaven'
+        content { includeGroup('net.neoforged') }
+    }
+    maven { url = 'https://bmclapi2.bangbang93.com/maven' }
+    mavenCentral()
+}
+
+dependencies {
+    // [mc:dependencies]
+}
+
+version = mod_version
+group = mod_group_id
+
+base {
+    archivesName = mod_id
+}
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+
+neoForge {
+    version = project.neo_version
+    runs {
+        client {
+            client()
+        }
+        server {
+            server()
+            programArgument '--nogui'
+        }
+        data {
+            data()
+        }
+    }
+    mods {
+        "${mod_id}" {
+            sourceSet sourceSets.main
+        }
+    }
+}
+
+// runData 输出挂进资源源集，随 jar 打包（勿手动改 generated 文件）。
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+// 只在 neoforge.mods.toml 上做占位符展开，其它资源文件原样复制。
+// 注意：expand 底层是 Groovy 模板引擎，会把它看到的任何“美元号+花括号”片段
+// 当作表达式求值——资源文件里出现非占位符的该类写法会让构建以模板解析失败报错。
+processResources {
+    // 模板展开用到的属性必须声明成输入，否则只改版本号/描述时这个任务会被判 up-to-date，
+    // 打出来的 jar 里还是旧内容。
+    inputs.property('mod_id', mod_id)
+    inputs.property('mod_name', mod_name)
+    inputs.property('mod_version', mod_version)
+    inputs.property('mod_authors', mod_authors)
+    inputs.property('mod_license', mod_license)
+    inputs.property('mod_description', mod_description)
+    inputs.property('neo_version_range', neo_version_range)
+    inputs.property('minecraft_version_range', minecraft_version_range)
+    filesMatching('META-INF/neoforge.mods.toml') {
+        expand project.properties
+    }
+    // 兜底校验：展开后的 toml 必须结构正常，至少不能出现引号不成对的行。
+    // （曾出现 versionRange="[4.2.0,") 这种引号位置写错，模组加载直接失败且很难定位。）
+    doLast {
+        def tomlOut = new File(destinationDir, 'META-INF/neoforge.mods.toml')
+        if (tomlOut.exists()) {
+            int lineNo = 0
+            tomlOut.eachLine { String line ->
+                lineNo++
+                if (line.count('"') % 2 != 0) {
+                    throw new GradleException('neoforge.mods.toml line ' + lineNo + ' has unbalanced quotes: ' + line)
+                }
+            }
+        }
+    }
+}
+
+jar {
+    manifest {
+        attributes([
+                "Specification-Title"     : mod_id,
+                "Specification-Vendor"    : mod_authors,
+                "Specification-Version"   : "1",
+                "Implementation-Title"    : project.name,
+                "Implementation-Version"  : project.jar.archiveVersion,
+                "Implementation-Vendor"   : mod_authors,
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
+    }
+}

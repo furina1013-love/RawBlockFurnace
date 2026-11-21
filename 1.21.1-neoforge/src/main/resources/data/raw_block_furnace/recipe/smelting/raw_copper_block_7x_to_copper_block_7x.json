@@ -1,0 +1,22 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "allthecompressed"
+    },
+    {
+      "type": "neoforge:item_exists",
+      "item": "allthecompressed:raw_copper_block_7x"
+    }
+  ],
+  "type": "minecraft:smelting",
+  "category": "blocks",
+  "cookingtime": 200,
+  "experience": 396.9,
+  "ingredient": {
+    "item": "allthecompressed:raw_copper_block_7x"
+  },
+  "result": {
+    "id": "allthecompressed:copper_block_7x"
+  }
+}

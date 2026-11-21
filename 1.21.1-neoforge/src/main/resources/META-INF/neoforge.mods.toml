@@ -1,0 +1,33 @@
+# 1.21.1（NeoForge 21.1.x）必须显式声明 modLoader / loaderVersion；license 必填。
+# 花括号占位符由 build.gradle 的 processResources 在构建时展开（值来自 gradle.properties）。
+# 注意：不要在本文件里写“美元号+花括号”形式的示例文字，它会被 Groovy 模板当表达式求值导致构建失败。
+modLoader="javafml"
+loaderVersion="[4,)"
+license="${mod_license}"
+issueTrackerURL="https://github.com/furina1013-love/RawBlockFurnace/issues"
+
+[[mods]]
+modId="${mod_id}"
+version="${mod_version}"
+displayName="${mod_name}"
+authors="${mod_authors}"
+description="${mod_description}"
+
+[[dependencies.${mod_id}]]
+modId="neoforge"
+type="required"
+versionRange="${neo_version_range}"
+
+[[dependencies.${mod_id}]]
+modId="minecraft"
+type="required"
+versionRange="${minecraft_version_range}"
+
+# AllTheCompressed（ATM 团队的压缩方块模组）为可选依赖：
+# 装了它才会加载压缩粗矿块的熔炼配方（配方本身还带 neoforge:mod_loaded + neoforge:item_exists 条件）。
+# 本模组只用注册名做运行时匹配，不依赖 ATC 的任何 API，所以版本区间放宽；
+# 压缩粗矿块本身是 ATC 4.2.0 起才有的（旧版本只是配方不会生成，不会报错）。
+[[dependencies.${mod_id}]]
+modId="allthecompressed"
+type="optional"
+versionRange="[1,)"

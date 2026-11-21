@@ -1,0 +1,29 @@
+modLoader="javafml"
+loaderVersion="${loader_version_range}"
+license="${mod_license}"
+issueTrackerURL="https://github.com/furina1013-love/RawBlockFurnace/issues"
+
+[[mods]]
+modId="${mod_id}"
+version="${mod_version}"
+displayName="${mod_name}"
+description="${mod_description}"
+
+[[dependencies.${mod_id}]]
+modId="forge"
+versionRange="${forge_version_range}"
+mandatory=true
+
+[[dependencies.${mod_id}]]
+modId="minecraft"
+versionRange="${minecraft_version_range}"
+mandatory=true
+
+# AllTheCompressed（ATM 团队的压缩方块模组）为可选依赖：装了它才会有压缩粗矿块的静态配方。
+# 运行时逻辑按注册名匹配，不依赖它的任何 API；压缩粗矿块是 ATC 4.2.0 起才有的。
+[[dependencies.${mod_id}]]
+modId="allthecompressed"
+mandatory=false
+versionRange="[1,)"
+ordering="NONE"
+side="BOTH"

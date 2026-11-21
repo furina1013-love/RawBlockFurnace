@@ -1,0 +1,12 @@
+pluginManagement {
+    repositories {
+        maven { url = 'https://bmclapi2.bangbang93.com/maven' }
+        gradlePluginPortal()
+    }
+}
+
+plugins {
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
+}
+
+rootProject.name = "raw_block_furnace"
