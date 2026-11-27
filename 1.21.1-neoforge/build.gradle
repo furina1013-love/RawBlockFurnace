@@ -6,17 +6,19 @@ plugins {
 }
 
 repositories {
-    // 本机自定义仓库（沙箱里 maven.neoforged.net 被 DNS 污染/白名单拦截）：
-    // 1) 本地 file 仓库，从 gradle 缓存导出，只接管 net.neoforged 组（BMCLAPI 缺 neoform-runtime、
-    //    minecraft-dependencies 等）；必须排除子组 net.neoforged.fancymodloader，否则 runServer 的
-    //    module path 上会出现重复的 fml_* 模块（报 reads another module named fml_earlydisplay）。
+    // 沙箱（本机）才生效的仓库：maven.neoforged.net 被 DNS 污染 / 出口白名单拦截。
+    // 1) 本地 file 仓库（由 gradle 缓存导出），只接管 net.neoforged 组；必须排除子组
+    //    net.neoforged.fancymodloader，否则 runServer 的 module path 会重复出现 fml_* 模块。
     // 2) BMCLAPI 镜像，内容与 maven.neoforged.net/releases 一致。
-    // 换到网络正常的机器上，这两行可以整个删掉。
-    maven {
-        url = 'file:///root/localmaven'
-        content { includeGroup('net.neoforged') }
+    // GitHub Actions / 正常网络里这两个目录不存在，会自动跳过，只用官方仓库。
+    def localMaven = new File('/root/localmaven')
+    if (localMaven.isDirectory()) {
+        maven {
+            url = localMaven.toURI()
+            content { includeGroup('net.neoforged') }
+        }
+        maven { url = 'https://bmclapi2.bangbang93.com/maven' }
     }
-    maven { url = 'https://bmclapi2.bangbang93.com/maven' }
     mavenCentral()
 }
 

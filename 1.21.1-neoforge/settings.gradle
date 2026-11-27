@@ -1,7 +1,8 @@
 pluginManagement {
     repositories {
-        maven { url = 'https://bmclapi2.bangbang93.com/maven' }
         gradlePluginPortal()
+        // 沙箱备用镜像（GitHub Actions 上走 gradlePluginPortal 即可）
+        maven { url = 'https://bmclapi2.bangbang93.com/maven' }
     }
 }
 
