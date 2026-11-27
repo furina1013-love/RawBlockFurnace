@@ -1,5 +1,9 @@
 # Raw Block Furnace
 
+[![build](https://github.com/furina1013-love/RawBlockFurnace/actions/workflows/build.yml/badge.svg)](https://github.com/furina1013-love/RawBlockFurnace/actions/workflows/build.yml)
+
+![cover](art/banner-1280x360.png)
+
 把**粗矿块**直接熔炼成对应的**金属块**的轻量模组 —— 原版粗矿块、其它模组的粗矿块、以及压缩方块模组
 （AllTheCompressed）的压缩粗矿块都支持。
 
@@ -45,10 +49,18 @@ blocks, and AllTheCompressed compressed raw blocks.
 
 ## 构建 / Build
 
+构建在 **GitHub Actions** 上跑（`.github/workflows/build.yml`）：矩阵分别构建两版，产物作为 artifact 上传；打 `v*` tag 时自动建 Release 并把两个 jar 挂上去（`raw_block_furnace-<ver>-mc1.21.1-neoforge.jar`、`raw_block_furnace-<ver>-mc1.20.1-forge.jar`）。
+
+本地只做编译验证（可选）：
+
 ```sh
 cd 1.21.1-neoforge && ./gradlew build     # -> build/libs/raw_block_furnace-1.0.0.jar
 cd 1.20.1-forge   && ./gradlew build      # -> build/libs/raw_block_furnace-1.0.0.jar
 ```
+
+## 交接 / Handover
+
+开发细节、用户要求、代码位置、公用/私有工具分布见 [项目交接.md](项目交接.md)。
 
 ## License
 
